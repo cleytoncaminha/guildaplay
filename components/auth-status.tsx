@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BookHeart, ChevronDown, FolderHeart, LogOut, MessageSquareText, UserRound } from "lucide-react";
+import { BookHeart, ChevronDown, FilePenLine, FolderHeart, LogOut, MessageSquareText, UserRound } from "lucide-react";
 import type { ApiEnvelope, AuthUser } from "@/lib/auth-types";
 
 export function AuthStatus({ mobile = false }: { mobile?: boolean }) {
@@ -36,10 +36,10 @@ export function AuthStatus({ mobile = false }: { mobile?: boolean }) {
   }
 
   if (!ready) return <span className={`auth-status-skeleton ${mobile ? "auth-status-skeleton--mobile" : ""}`} aria-label="Consultando sessão" />;
-  if (!user) return <Link className={mobile ? "mobile-login-link" : "header-login-link"} href="/entrar">Entrar</Link>;
+  if (!user) return <Link className={mobile ? "mobile-login-link" : "header-login-link"} href="/login">Entrar</Link>;
 
   if (mobile) {
-    return <span className="auth-status-mobile"><Link href="/biblioteca">Minha biblioteca</Link><Link href="/minhas-colecoes">Minhas coleções</Link><Link href="/minhas-avaliacoes">Minhas avaliações</Link><Link href="/conta/perfil">Minha conta</Link><button className="mobile-logout" onClick={logout}>Sair</button></span>;
+    return <span className="auth-status-mobile"><Link href="/library">Minha biblioteca</Link><Link href="/my-collections">Minhas coleções</Link><Link href="/my-reviews">Minhas avaliações</Link><Link href="/contributions">Minhas contribuições</Link><Link href="/account/profile">Minha conta</Link><button className="mobile-logout" onClick={logout}>Sair</button></span>;
   }
 
   return (
@@ -47,10 +47,11 @@ export function AuthStatus({ mobile = false }: { mobile?: boolean }) {
       <summary><span className="avatar">{user.name.charAt(0).toUpperCase()}</span><strong>{user.name.split(" ")[0]}</strong><ChevronDown /></summary>
       <div className="auth-status__menu">
         <div><span className="avatar">{user.name.charAt(0).toUpperCase()}</span><p><strong>{user.name}</strong><small>{user.email}</small></p></div>
-        <Link href="/biblioteca"><BookHeart /> Minha biblioteca</Link>
-        <Link href="/minhas-colecoes"><FolderHeart /> Minhas coleções</Link>
-        <Link href="/minhas-avaliacoes"><MessageSquareText /> Minhas avaliações</Link>
-        <Link href="/conta/perfil"><UserRound /> Minha conta</Link>
+        <Link href="/library"><BookHeart /> Minha biblioteca</Link>
+        <Link href="/my-collections"><FolderHeart /> Minhas coleções</Link>
+        <Link href="/my-reviews"><MessageSquareText /> Minhas avaliações</Link>
+        <Link href="/contributions"><FilePenLine /> Minhas contribuições</Link>
+        <Link href="/account/profile"><UserRound /> Minha conta</Link>
         <button onClick={logout}><LogOut /> Sair</button>
       </div>
     </details>

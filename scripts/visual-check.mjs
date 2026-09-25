@@ -10,14 +10,17 @@ const browser = await chromium.launch({ executablePath, headless: true });
 const results = [];
 const routes = [
   { name: "home", path: "/" },
-  { name: "catalog", path: "/catalogo" },
-  { name: "lists", path: "/listas" },
-  { name: "login", path: "/entrar" },
-  { name: "register", path: "/cadastro" },
-  { name: "library", path: "/biblioteca", mockAccount: true },
-  { name: "my-collections", path: "/minhas-colecoes", mockAccount: true },
-  { name: "my-reviews", path: "/minhas-avaliacoes", mockAccount: true },
-  { name: "not-found", path: "/catalogo/item-inexistente" },
+  { name: "catalog", path: "/catalog" },
+  { name: "lists", path: "/lists" },
+  { name: "login", path: "/login" },
+  { name: "register", path: "/register" },
+  { name: "library", path: "/library", mockAccount: true },
+  { name: "my-collections", path: "/my-collections", mockAccount: true },
+  { name: "my-reviews", path: "/my-reviews", mockAccount: true },
+  { name: "contributions", path: "/contributions", mockAccount: true },
+  { name: "new-contribution", path: "/contributions/new", mockAccount: true },
+  { name: "contribution-detail", path: "/contributions/00000000-0000-4000-8000-000000000002", mockAccount: true, mockContribution: true },
+  { name: "not-found", path: "/catalog/missing-item" },
 ];
 
 for (const viewport of [{ name: "desktop", width: 1680, height: 1050 }, { name: "mobile", width: 390, height: 844 }]) {
@@ -31,6 +34,22 @@ for (const viewport of [{ name: "desktop", width: 1680, height: 1050 }, { name: 
       await page.route("**/api/me/catalog/**", (requestRoute) => {
         const url = requestRoute.request().url();
         const body = url.includes("/collections") ? { data: [] } : { data: [], meta: { page: 1, limit: 20, total: 0, totalPages: 0 } };
+        return requestRoute.fulfill({ contentType: "application/json", body: JSON.stringify(body) });
+      });
+      await page.route("**/api/me/contributions**", (requestRoute) => {
+        const contribution = {
+          id: "00000000-0000-4000-8000-000000000002",
+          type: "CREATE_ITEM",
+          catalogItemId: null,
+          catalogItem: null,
+          payload: { title: "Crônicas da Aurora", slug: "cronicas-da-aurora", type: "SETTING", summary: "Um cenário fantástico sugerido pela comunidade." },
+          status: "PENDING",
+          reviewReason: null,
+          reviewedAt: null,
+          createdAt: "2026-09-25T12:00:00.000Z",
+          updatedAt: "2026-09-25T12:00:00.000Z",
+        };
+        const body = route.mockContribution ? { data: contribution } : { data: [], meta: { page: 1, limit: 12, total: 0, totalPages: 0 } };
         return requestRoute.fulfill({ contentType: "application/json", body: JSON.stringify(body) });
       });
     }

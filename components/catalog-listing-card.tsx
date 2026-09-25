@@ -12,7 +12,7 @@ export function CatalogListingCard({ item }: { item: CatalogItem }) {
     <article className="catalog-list-card">
       <Link
         className={`catalog-list-card__cover ${cover ? "" : "catalog-cover--empty"}`}
-        href={`/catalogo/${item.slug}`}
+        href={`/catalog/${item.slug}`}
         style={cover ? { backgroundImage: `url("${cover}")` } : undefined}
         aria-label={`Abrir ${item.title}`}
       >
@@ -23,14 +23,14 @@ export function CatalogListingCard({ item }: { item: CatalogItem }) {
         <div className="catalog-list-card__systems">
           {item.systems.length ? item.systems.map((system) => <span key={system.id}>{system.name}</span>) : <span>Sistema não informado</span>}
         </div>
-        <h2><Link href={`/catalogo/${item.slug}`}>{item.title}</Link></h2>
+        <h2><Link href={`/catalog/${item.slug}`}>{item.title}</Link></h2>
         {(item.summary || item.description) && <p>{item.summary ?? item.description}</p>}
         <footer>
           <div>
             {item.originalReleaseYear && <span><CalendarDays />{item.originalReleaseYear}</span>}
             {rating && <span className="catalog-list-card__rating"><Star fill="currentColor" />{rating}/10</span>}
           </div>
-          <Link href={`/catalogo/${item.slug}`} aria-label={`Ver detalhes de ${item.title}`}><ArrowRight /></Link>
+          <Link href={`/catalog/${item.slug}`} aria-label={`Ver detalhes de ${item.title}`}><ArrowRight /></Link>
         </footer>
       </div>
     </article>

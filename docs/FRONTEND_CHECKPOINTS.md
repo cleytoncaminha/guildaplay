@@ -13,18 +13,23 @@
 | Rota | Estado | Observação |
 | --- | --- | --- |
 | `/` | Pronta | Home do catálogo, busca, filtros, estados de loading/erro/vazio e integração com `GET /catalog/items` |
-| `/catalogo` | Pronta | Listagem completa com busca, filtros, ordenação e paginação |
+| `/catalog` | Pronta | Listagem completa com busca, filtros, ordenação e paginação |
 | `/api/catalog` | Pronta | Proxy server-side do Next.js para a busca pública |
-| `/catalogo/[slug]` | Pronta | Detalhe editorial, capa assinada, metadata e conteúdo relacionado |
-| `/catalogo/[slug]/avaliacoes` | Pronta | Avaliações públicas paginadas |
-| `/listas` e `/listas/[slug]` | Prontas | Curadorias publicadas e seus títulos |
-| `/colecoes/[collectionId]` | Pronta | Coleção pessoal pública |
-| `/entrar` e `/cadastro` | Prontas | Login, cadastro e criação segura de sessão |
-| `/verificar-email` | Pronta | Confirmação e reenvio de verificação |
-| `/recuperar-senha` e `/redefinir-senha` | Prontas | Recuperação completa de credencial |
-| `/conta/perfil` | Pronta | Consulta e atualização do perfil, logout geral |
+| `/catalog/[slug]` | Pronta | Detalhe editorial, capa assinada, metadata e conteúdo relacionado |
+| `/catalog/[slug]/reviews` | Pronta | Avaliações públicas paginadas |
+| `/lists` e `/lists/[slug]` | Prontas | Curadorias publicadas e seus títulos |
+| `/collections/[collectionId]` | Pronta | Coleção pessoal pública |
+| `/login` e `/register` | Prontas | Login, cadastro e criação segura de sessão |
+| `/verify-email` | Pronta | Confirmação e reenvio de verificação |
+| `/forgot-password` e `/reset-password` | Prontas | Recuperação completa de credencial |
+| `/account/profile` | Pronta | Consulta e atualização do perfil, logout geral |
+| `/library` | Pronta | Marcadores combináveis e comentários privados |
+| `/my-collections` e detalhe | Prontas | CRUD, visibilidade e organização de títulos |
+| `/my-reviews` | Pronta | Avaliações próprias e estados de moderação |
+| `/contributions`, criação e detalhe | Prontas | Sugestões editoriais e acompanhamento da moderação |
+| `/reports/new` | Pronta | Denúncias de item ou mídia com regra de duplicidade |
 
-Ainda não existem as páginas de biblioteca, colaboração, mestre ou administração.
+Ainda não existem as páginas de administração editorial e moderação.
 
 ## 3. Mapa geral de páginas
 
@@ -33,26 +38,25 @@ Ainda não existem as páginas de biblioteca, colaboração, mestre ou administr
 | Rota proposta | Página | API |
 | --- | --- | --- |
 | `/` | Home e catálogo principal | `GET /catalog/items` |
-| `/catalogo` | Listagem completa do catálogo | `GET /catalog/items` |
-| `/catalogo/[slug]` | Detalhe do item | `GET /catalog/items/:slug` |
-| `/catalogo/[slug]/avaliacoes` | Avaliações públicas | `GET /catalog/items/:slug/reviews` |
-| `/listas` | Curadorias publicadas | `GET /catalog/lists` |
-| `/listas/[slug]` | Detalhe de curadoria | `GET /catalog/lists/:slug` |
-| `/colecoes/[collectionId]` | Coleção pessoal pública | `GET /catalog/collections/:collectionId` |
-| `/convites/[token]` | Preview e aceite de convite | `GET /invitations/:token/preview`, `POST /invitations/:token/accept` |
+| `/catalog` | Listagem completa do catálogo | `GET /catalog/items` |
+| `/catalog/[slug]` | Detalhe do item | `GET /catalog/items/:slug` |
+| `/catalog/[slug]/reviews` | Avaliações públicas | `GET /catalog/items/:slug/reviews` |
+| `/lists` | Curadorias publicadas | `GET /catalog/lists` |
+| `/lists/[slug]` | Detalhe de curadoria | `GET /catalog/lists/:slug` |
+| `/collections/[collectionId]` | Coleção pessoal pública | `GET /catalog/collections/:collectionId` |
 
 Filtros como “Aventuras” e “Suplementos” devem apontar para URLs do catálogo, por exemplo
-`/catalogo?type=ADVENTURE`, e não para bases locais separadas.
+`/catalog?type=ADVENTURE`, e não para bases locais separadas.
 
 ### Autenticação — API disponível
 
 | Rota proposta | Página | API |
 | --- | --- | --- |
-| `/entrar` | Login | `POST /auth/login` |
-| `/cadastro` | Cadastro de usuário | `POST /auth/register` |
-| `/verificar-email` | Confirmação e reenvio | `POST /auth/verify-email`, `POST /auth/resend-verification` |
-| `/recuperar-senha` | Solicitação de recuperação | `POST /auth/forgot-password` |
-| `/redefinir-senha` | Nova senha por token | `POST /auth/reset-password` |
+| `/login` | Login | `POST /auth/login` |
+| `/register` | Cadastro de usuário | `POST /auth/register` |
+| `/verify-email` | Confirmação e reenvio | `POST /auth/verify-email`, `POST /auth/resend-verification` |
+| `/forgot-password` | Solicitação de recuperação | `POST /auth/forgot-password` |
+| `/reset-password` | Nova senha por token | `POST /auth/reset-password` |
 
 Infraestrutura associada: refresh por cookie, logout, `GET /auth/me`, proteção por role e
 redirecionamento de retorno após login.
@@ -61,14 +65,14 @@ redirecionamento de retorno após login.
 
 | Rota proposta | Página | API |
 | --- | --- | --- |
-| `/conta/perfil` | Dados e preferências | `GET/PATCH /users/me` |
-| `/biblioteca` | TENHO, QUERO, JOGUEI e FAVORITO | `GET/PUT/DELETE /catalog/me/items` |
-| `/minhas-colecoes` | Coleções do usuário | `GET/POST /catalog/me/collections` |
-| `/minhas-colecoes/[collectionId]` | Editar coleção e organizar itens | endpoints de coleção e itens |
-| `/minhas-avaliacoes` | Avaliações próprias e status de moderação | `GET /catalog/reviews/mine` |
-| `/contribuicoes` | Sugestões editoriais próprias | `GET /catalog/submissions/mine` |
-| `/contribuicoes/nova` | Criar item ou sugerir alteração | `POST /catalog/submissions` |
-| `/contribuicoes/[submissionId]` | Detalhe da sugestão | `GET /catalog/submissions/mine/:submissionId` |
+| `/account/profile` | Dados e preferências | `GET/PATCH /users/me` |
+| `/library` | TENHO, QUERO, JOGUEI e FAVORITO | `GET/PUT/DELETE /catalog/me/items` |
+| `/my-collections` | Coleções do usuário | `GET/POST /catalog/me/collections` |
+| `/my-collections/[collectionId]` | Editar coleção e organizar itens | endpoints de coleção e itens |
+| `/my-reviews` | Avaliações próprias e status de moderação | `GET /catalog/reviews/mine` |
+| `/contributions` | Sugestões editoriais próprias | `GET /catalog/submissions/mine` |
+| `/contributions/new` | Criar item ou sugerir alteração | `POST /catalog/submissions` |
+| `/contributions/[submissionId]` | Detalhe da sugestão | `GET /catalog/submissions/mine/:submissionId` |
 
 Também entram como fluxos/modais do detalhe do item:
 
@@ -78,65 +82,38 @@ Também entram como fluxos/modais do detalhe do item:
 - denunciar item ou mídia;
 - sugerir correção editorial.
 
-### Mesas, jogador e mestre — API disponível parcialmente
+### Fora do escopo desta fase
 
-| Rota proposta | Página | API/estado |
-| --- | --- | --- |
-| `/minhas-mesas` | Mesas das quais o jogador participa | `GET /memberships/mine` |
-| `/mestre/perfil` | Criar/editar perfil de mestre | `POST/GET/PATCH /gm-profiles` |
-| `/mestre/mesas` | Mesas administradas | `GET /tables/mine` |
-| `/mestre/mesas/nova` | Criar mesa | `POST /tables` |
-| `/mestre/mesas/[tableId]` | Visão operacional da mesa | `GET /tables/:tableId` |
-| `/mestre/mesas/[tableId]/editar` | Editar, ativar, pausar e arquivar | endpoints de estado da mesa |
-| `/mestre/mesas/[tableId]/membros` | Jogadores, remoção e convite | endpoints de members/invitations |
-
-Não existe busca pública de mesas na API atual. Portanto, uma página pública de descoberta de
-mesas não deve ser criada até existir contrato específico.
+Mesas, perfis de mestre, convites, membros e recursos financeiros ficam explicitamente adiados.
+A primeira entrega do frontend cobre somente catálogo, acervo pessoal, colaboração editorial,
+administração e moderação do catálogo.
 
 ### Administração editorial — API disponível
 
 | Rota proposta | Página |
 | --- | --- |
 | `/admin` | Visão inicial administrativa |
-| `/admin/catalogo/sistemas` | Listar e criar sistemas |
-| `/admin/catalogo/sistemas/[systemId]` | Editar, publicar ou arquivar sistema |
-| `/admin/catalogo/itens` | Listar itens editoriais |
-| `/admin/catalogo/itens/novo` | Criar item |
-| `/admin/catalogo/itens/[itemId]` | Editor completo de item, relações, aliases, fontes e mídia |
-| `/admin/catalogo/edicoes` | CRUD de edições |
-| `/admin/catalogo/editoras` | CRUD de editoras |
-| `/admin/catalogo/criadores` | CRUD de criadores |
-| `/admin/catalogo/categorias` | CRUD de categorias |
-| `/admin/catalogo/tags` | CRUD de tags |
+| `/admin/catalog/systems` | Listar e criar sistemas |
+| `/admin/catalog/systems/[systemId]` | Editar, publicar ou arquivar sistema |
+| `/admin/catalog/items` | Listar itens editoriais |
+| `/admin/catalog/items/new` | Criar item |
+| `/admin/catalog/items/[itemId]` | Editor completo de item, relações, aliases, fontes e mídia |
+| `/admin/catalog/editions` | CRUD de edições |
+| `/admin/catalog/publishers` | CRUD de editoras |
+| `/admin/catalog/creators` | CRUD de criadores |
+| `/admin/catalog/categories` | CRUD de categorias |
+| `/admin/catalog/tags` | CRUD de tags |
 
 ### Curadoria e moderação — API disponível
 
 | Rota proposta | Página |
 | --- | --- |
-| `/admin/curadorias` | Listas temáticas editoriais |
-| `/admin/curadorias/[listId]` | Editar, ordenar, publicar ou arquivar lista |
-| `/admin/moderacao/sugestoes` | Aprovar ou rejeitar contribuições |
-| `/admin/moderacao/denuncias` | Resolver ou descartar denúncias |
-| `/admin/moderacao/avaliacoes` | Publicar ou rejeitar avaliações |
-| `/admin/auditoria` | Consulta de audit logs |
-
-### Bloqueadas por ausência de API implementada
-
-As rotas abaixo aparecem na documentação de produto, mas não possuem controller implementado no
-backend atual. Não devem receber dados simulados.
-
-| Rota futura | Dependência ausente |
-| --- | --- |
-| `/painel/jogador` | `GET /player/dashboard` |
-| `/mestre/financeiro` | `GET /gm/dashboard` e resumos de pagamentos |
-| `/mestre/conta-financeira` | endpoints de `gm-payment-account` |
-| `/assinaturas` | endpoints de subscriptions |
-| `/pagamentos` | histórico de payments |
-| `/pagamentos/[paymentId]` | detalhe e QR Pix |
-| `/admin/usuarios` | listagem administrativa de usuários |
-| `/admin/contas-financeiras` | contas financeiras de mestres |
-| `/admin/webhooks` | listagem, detalhe e reprocessamento |
-| `/admin/reconciliacao` | reconciliação de payments/subscriptions |
+| `/admin/curated-lists` | Listas temáticas editoriais |
+| `/admin/curated-lists/[listId]` | Editar, ordenar, publicar ou arquivar lista |
+| `/admin/moderation/submissions` | Aprovar ou rejeitar contribuições |
+| `/admin/moderation/reports` | Resolver ou descartar denúncias |
+| `/admin/moderation/reviews` | Publicar ou rejeitar avaliações |
+| `/admin/audit` | Consulta de audit logs |
 
 Também falta um endpoint público próprio para detalhe completo de sistema. A API pública atualmente
 retorna apenas `id`, `name` e `slug` do sistema dentro dos itens.
@@ -158,11 +135,11 @@ retorna apenas `id`, `name` e `slug` do sistema dentro dos itens.
 Páginas:
 
 - finalizar `/`;
-- `/catalogo`;
-- `/catalogo/[slug]`;
-- `/catalogo/[slug]/avaliacoes`;
-- `/listas` e `/listas/[slug]`;
-- `/colecoes/[collectionId]`.
+- `/catalog`;
+- `/catalog/[slug]`;
+- `/catalog/[slug]/reviews`;
+- `/lists` e `/lists/[slug]`;
+- `/collections/[collectionId]`.
 
 Critério de pronto:
 
@@ -188,13 +165,13 @@ Critério de pronto:
 - retorno para a rota original após login;
 - guards de `USER` e `ADMIN`.
 
-### CP3 — Biblioteca, coleções e avaliações
+### CP3 — Biblioteca, coleções e avaliações — concluído
 
 Páginas:
 
-- `/biblioteca`;
-- `/minhas-colecoes` e detalhe;
-- `/minhas-avaliacoes`;
+- `/library`;
+- `/my-collections` e detalhe;
+- `/my-reviews`;
 - ações pessoais no detalhe do item.
 
 Critério de pronto:
@@ -204,7 +181,7 @@ Critério de pronto:
 - avaliação editada volta para `PENDING`;
 - coleção pública e privada respeitam visibilidade.
 
-### CP4 — Colaboração comunitária
+### CP4 — Colaboração comunitária — concluído
 
 Páginas/fluxos:
 
@@ -219,24 +196,7 @@ Critério de pronto:
 - denúncia DUPLICATE exige item relacionado;
 - status sempre vem da API.
 
-### CP5 — Mesas sem financeiro
-
-Páginas:
-
-- convite público;
-- minhas mesas;
-- perfil do mestre;
-- CRUD e estados da mesa;
-- membros e convites.
-
-Critério de pronto:
-
-- ownership e roles tratados;
-- aceite de convite trata expirado, usado e mesa cheia;
-- ativar, pausar e arquivar refletem o estado real;
-- nenhuma função financeira simulada.
-
-### CP6 — Administração editorial
+### CP5 — Administração editorial
 
 Páginas:
 
@@ -251,7 +211,7 @@ Critério de pronto:
 - publicar/arquivar invalida leituras públicas;
 - upload ocorre direto para R2 e é confirmado na API.
 
-### CP7 — Curadoria e moderação
+### CP6 — Curadoria e moderação
 
 Páginas:
 
@@ -266,12 +226,7 @@ Critério de pronto:
 - listas aceitam somente itens publicados;
 - ações administrativas exibem sucesso e falha rastreáveis.
 
-### CP8 — Financeiro — bloqueado pelo backend
-
-Só iniciar depois que os controllers de GM payment account, subscriptions, payments, refunds,
-dashboards e webhooks administrativos estiverem implementados e validados no Swagger.
-
-### CP9 — Hardening e entrega
+### CP7 — Hardening e entrega
 
 - testes unitários dos formatadores e cliente HTTP;
 - testes de componentes e formulários;
@@ -289,11 +244,9 @@ CP1 Catálogo público
   -> CP2 Autenticação
     -> CP3 Área pessoal
       -> CP4 Colaboração
-        -> CP5 Mesas
-          -> CP6 Administração editorial
-            -> CP7 Moderação/curadoria
-              -> CP8 Financeiro quando a API existir
-                -> CP9 Hardening
+        -> CP5 Administração editorial
+          -> CP6 Moderação/curadoria
+            -> CP7 Hardening
 ```
 
-O próximo checkpoint recomendado é o **CP3 — Biblioteca, coleções e avaliações**.
+O próximo checkpoint recomendado é o **CP5 — Administração editorial do catálogo**.

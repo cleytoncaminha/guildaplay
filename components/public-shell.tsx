@@ -6,11 +6,11 @@ import { AuthStatus } from "./auth-status";
 
 const navigation = [
   { label: "Início", href: "/" },
-  { label: "Catálogo", href: "/catalogo" },
-  { label: "Sistemas", href: "/catalogo" },
-  { label: "Aventuras", href: "/catalogo?type=ADVENTURE" },
-  { label: "Suplementos", href: "/catalogo?type=SUPPLEMENT" },
-  { label: "Comunidade", href: "/listas" },
+  { label: "Catálogo", href: "/catalog" },
+  { label: "Sistemas", href: "/catalog" },
+  { label: "Aventuras", href: "/catalog?type=ADVENTURE" },
+  { label: "Suplementos", href: "/catalog?type=SUPPLEMENT" },
+  { label: "Comunidade", href: "/lists" },
 ] as const;
 
 export function PublicHeader({ active }: { active?: "home" | "catalog" | "community" }) {
@@ -35,7 +35,7 @@ export function PublicHeader({ active }: { active?: "home" | "catalog" | "commun
         ))}
       </nav>
       <div className="user-actions" aria-label="Ações da conta">
-        <Link href="/catalogo" aria-label="Pesquisar no catálogo"><Search /></Link>
+        <Link href="/catalog" aria-label="Pesquisar no catálogo"><Search /></Link>
         <AuthStatus />
       </div>
       <details className="public-mobile-nav">
@@ -50,7 +50,7 @@ export function PublicFooter() {
   return (
     <footer className="footer">
       <Brand compact />
-      <p>Feito para quem acredita que toda mesa merece uma grande história.</p>
+      <p>Feito para quem acredita que toda história merece ser descoberta.</p>
       <span>© 2026 GuildaPlay</span>
     </footer>
   );

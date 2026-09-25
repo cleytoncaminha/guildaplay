@@ -24,22 +24,22 @@ type FiltersState = {
 
 const initialFilters: FiltersState = { query: "", systemId: "", type: "", languageCode: "", year: "", page: 1 };
 const quickLinks = [
-  { label: "Sistemas de RPG", icon: BookOpen, href: "/catalogo" },
-  { label: "Aventuras", icon: Dices, href: "/catalogo?type=ADVENTURE" },
-  { label: "Suplementos", icon: Library, href: "/catalogo?type=SUPPLEMENT" },
-  { label: "Cenários", icon: Crown, href: "/catalogo?type=SETTING" },
-  { label: "Curadorias", icon: Users, href: "/listas" },
-  { label: "Comunidade", icon: Users, href: "/listas" },
-  { label: "Todas as categorias", icon: Grid2X2, href: "/catalogo" },
-];
+  { label: "Sistemas de RPG", icon: BookOpen, href: "/catalog" },
+  { label: "Aventuras", icon: Dices, href: "/catalog?type=ADVENTURE" },
+  { label: "Suplementos", icon: Library, href: "/catalog?type=SUPPLEMENT" },
+  { label: "Cenários", icon: Crown, href: "/catalog?type=SETTING" },
+  { label: "Curadorias", icon: Users, href: "/lists" },
+  { label: "Comunidade", icon: Users, href: "/lists" },
+  { label: "Todas as categorias", icon: Grid2X2, href: "/catalog" },
+] as const;
 const mainNavigation = [
   { label: "Início", href: "/" },
-  { label: "Catálogo", href: "/catalogo" },
-  { label: "Sistemas", href: "/catalogo" },
-  { label: "Aventuras", href: "/catalogo?type=ADVENTURE" },
-  { label: "Suplementos", href: "/catalogo?type=SUPPLEMENT" },
-  { label: "Comunidade", href: "/listas" },
-];
+  { label: "Catálogo", href: "/catalog" },
+  { label: "Sistemas", href: "/catalog" },
+  { label: "Aventuras", href: "/catalog?type=ADVENTURE" },
+  { label: "Suplementos", href: "/catalog?type=SUPPLEMENT" },
+  { label: "Comunidade", href: "/lists" },
+] as const;
 
 function getInitialFilters(): FiltersState {
   if (typeof window === "undefined") return initialFilters;
@@ -60,7 +60,7 @@ function Cover({ item, className = "" }: { item: CatalogItem; className?: string
 }
 
 function SectionTitle({ title, subtitle, link }: { title: string; subtitle: string; link?: string }) {
-  return <div className="section-heading"><div className="section-heading__title"><Compass aria-hidden="true" /><div><h2>{title}</h2><p>{subtitle}</p></div></div>{link && <Link href="/catalogo">{link} <ArrowRight size={16} /></Link>}</div>;
+  return <div className="section-heading"><div className="section-heading__title"><Compass aria-hidden="true" /><div><h2>{title}</h2><p>{subtitle}</p></div></div>{link && <Link href="/catalog">{link} <ArrowRight size={16} /></Link>}</div>;
 }
 
 function Skeletons({ amount = 5, product = false }: { amount?: number; product?: boolean }) {
@@ -95,7 +95,7 @@ function Filters({ filters, systems, totalByType, onChange, onClear, loading }: 
 function ProductCard({ item }: { item: CatalogItem }) {
   const system = item.systems[0]?.name ?? "Sistema não informado";
   const date = item.originalReleaseYear?.toString() ?? new Date(item.createdAt).toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
-  return <article className="product-card"><Cover item={item} className="product-card__cover" /><div className="product-card__body"><div className="product-card__topline"><span>{typeLabels[item.type]}</span><Link href={`/catalogo/${item.slug}#minha-estante`} aria-label="Organizar na minha estante"><Heart /></Link></div><h3>{item.title}</h3><h4>{system}</h4>{item.reviews.averageRating !== null && <div className="rating"><Star fill="currentColor" /> {(item.reviews.averageRating / 2).toFixed(1)} <span>({item.reviews.reviewCount})</span></div>}<p>{item.summary ?? item.description ?? "Conheça este título no catálogo da Guilda."}</p><footer><span><CalendarDays /> {date}</span><a href={`/catalogo/${item.slug}`} aria-label={`Abrir ${item.title}`}><ArrowRight /></a></footer></div></article>;
+  return <article className="product-card"><Cover item={item} className="product-card__cover" /><div className="product-card__body"><div className="product-card__topline"><span>{typeLabels[item.type]}</span><Link href={`/catalog/${item.slug}#personal-library`} aria-label="Organizar na minha estante"><Heart /></Link></div><h3>{item.title}</h3><h4>{system}</h4>{item.reviews.averageRating !== null && <div className="rating"><Star fill="currentColor" /> {(item.reviews.averageRating / 2).toFixed(1)} <span>({item.reviews.reviewCount})</span></div>}<p>{item.summary ?? item.description ?? "Conheça este título no catálogo da Guilda."}</p><footer><span><CalendarDays /> {date}</span><Link href={`/catalog/${item.slug}`} aria-label={`Abrir ${item.title}`}><ArrowRight /></Link></footer></div></article>;
 }
 
 function SystemCard({ system, items, isPopular }: { system: CatalogSystem; items: CatalogItem[]; isPopular: boolean }) {
@@ -158,15 +158,15 @@ export function CatalogExperience() {
   const items = catalog?.data ?? [];
 
   return <main id="top">
-    <header className="topbar"><Brand /><nav className={menuOpen ? "nav--open" : ""} aria-label="Navegação principal">{mainNavigation.map((item) => <a key={item.label} className={item.label === "Início" ? "active" : ""} href={item.href}>{item.label}</a>)}<AuthStatus mobile /></nav><div className="user-actions"><Link href="/catalogo" aria-label="Pesquisar"><Search /></Link><AuthStatus /></div><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menu">{menuOpen ? <X /> : <Menu />}</button></header>
+    <header className="topbar"><Brand /><nav className={menuOpen ? "nav--open" : ""} aria-label="Navegação principal">{mainNavigation.map((item) => <Link key={item.label} className={item.label === "Início" ? "active" : ""} href={item.href}>{item.label}</Link>)}<AuthStatus mobile /></nav><div className="user-actions"><Link href="/catalog" aria-label="Pesquisar"><Search /></Link><AuthStatus /></div><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menu">{menuOpen ? <X /> : <Menu />}</button></header>
     <section className="hero"><div className="hero__shade" /><div className="hero__content"><p className="eyebrow"><span /> O universo do RPG em um só lugar</p><h1>Sua próxima <em>aventura</em><br />começa aqui.</h1><p className="hero__copy">Descubra sistemas, aventuras, suplementos e muito mais.<br />Explore o universo do RPG e encontre histórias que combinam com você.</p><form className="searchbar" onSubmit={submitSearch}><Search aria-hidden="true" /><input value={queryInput} onChange={(event) => setQueryInput(event.target.value)} placeholder="Busque sistemas, aventuras, suplementos, cenários ou palavras-chave..." aria-label="Buscar no catálogo" /><select value={filters.type} onChange={(event) => setFilters((current) => ({ ...current, type: event.target.value, page: 1 }))} aria-label="Categoria"><option value="">Todos</option>{typeOptions.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}</select><button><Search /> <span>Buscar</span></button></form><div className="quick-links">{quickLinks.map(({ label, icon: Icon, href }) => <a href={href} key={label}><Icon />{label}</a>)}</div></div><div className="hero__motto">Boas histórias<br />vivem aqui.</div></section>
     <div className="page-shell" id="catalogo"><Filters filters={filters} systems={systems} totalByType={totalByType} onChange={(patch) => setFilters((current) => ({ ...current, ...patch }))} onClear={clearFilters} loading={loading} /><div className="catalog-content">
       <section><SectionTitle title="Sistemas em destaque" subtitle="Os sistemas com mais títulos publicados no catálogo." link="Ver todos os sistemas" />{discoveryLoading ? <Skeletons /> : featuredSystems.length ? <div className="systems-grid">{featuredSystems.map((system, index) => <SystemCard system={system} items={discoveryItems} isPopular={index === 0} key={system.id} />)}</div> : <div className="empty-inline">Ainda não há sistemas publicados.</div>}</section>
       <section><SectionTitle title={filters.query || filters.systemId || filters.type ? "Resultados do catálogo" : "Lançamentos recentes"} subtitle={catalog ? `${catalog.meta.total} ${catalog.meta.total === 1 ? "título encontrado" : "títulos encontrados"}.` : "Os lançamentos mais recentes do mundo do RPG."} />{loading ? <Skeletons product /> : error ? <div className="empty-state"><RefreshCw /><h3>O catálogo não respondeu</h3><p>{error}</p><button onClick={() => void loadCatalog()}>Tentar novamente</button></div> : items.length ? <div className="products-grid">{items.slice(0, 5).map((item) => <ProductCard item={item} key={item.id} />)}</div> : <div className="empty-state"><Dices /><h3>Nenhuma aventura encontrada</h3><p>Tente remover alguns filtros ou buscar por outro termo.</p><button onClick={clearFilters}>Limpar busca</button></div>}</section>
       {!loading && !error && items.length > 5 && <section><SectionTitle title="Continue explorando" subtitle="Mais conteúdos publicados que combinam com os filtros selecionados." /><div className="products-grid products-grid--compact">{items.slice(5, 10).map((item) => <ProductCard item={item} key={item.id} />)}</div></section>}
       {catalog && catalog.meta.totalPages > 1 && <nav className="pagination" aria-label="Paginação"><button disabled={filters.page <= 1} onClick={() => setFilters((current) => ({ ...current, page: current.page - 1 }))}><ChevronLeft /> Anterior</button><span>Página {catalog.meta.page} de {catalog.meta.totalPages}</span><button disabled={filters.page >= catalog.meta.totalPages} onClick={() => setFilters((current) => ({ ...current, page: current.page + 1 }))}>Próxima <ChevronRight /></button></nav>}
-      <section className="category-strip"><div><Shield /><span><strong>Catálogo vivo e colaborativo</strong><small>Dados editoriais publicados e moderados pela comunidade da Guilda.</small></span></div><Link href="/listas">Ver curadorias <ArrowRight /></Link></section>
+      <section className="category-strip"><div><Shield /><span><strong>Catálogo vivo e colaborativo</strong><small>Dados editoriais publicados e moderados pela comunidade da Guilda.</small></span></div><Link href="/lists">Ver curadorias <ArrowRight /></Link></section>
     </div></div>
-    <footer className="footer"><Brand compact /><p>Feito para quem acredita que toda mesa merece uma grande história.</p><span>© 2026 GuildaPlay</span></footer>
+    <footer className="footer"><Brand compact /><p>Feito para quem acredita que toda história merece ser descoberta.</p><span>© 2026 GuildaPlay</span></footer>
   </main>;
 }

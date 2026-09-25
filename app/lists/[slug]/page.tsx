@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: FeaturedListPageProps): Promi
   return list ? {
     title: `${list.title} | Dados da Guilda`,
     description: list.description ?? `Explore a curadoria ${list.title}.`,
-    alternates: { canonical: `/listas/${list.slug}` },
+    alternates: { canonical: `/lists/${list.slug}` },
   } : { title: "Curadoria não encontrada | Dados da Guilda" };
 }
 
@@ -37,7 +37,7 @@ export default async function FeaturedListPage({ params }: FeaturedListPageProps
         <div className="masthead-facts"><span><UserRound /> Curadoria de {list.curator.name}</span><span><Layers3 /> {list.items.length} {list.items.length === 1 ? "título" : "títulos"}</span>{list.publishedAt && <span><CalendarDays /> Publicada em {formatDate(list.publishedAt)}</span>}</div>
       </PageMasthead>
       <div className="content-page">
-        <Breadcrumbs items={[{ label: "Início", href: "/" }, { label: "Curadorias", href: "/listas" }, { label: list.title }]} />
+        <Breadcrumbs items={[{ label: "Início", href: "/" }, { label: "Curadorias", href: "/lists" }, { label: list.title }]} />
         <header className="content-heading"><div><p className="panel-eyebrow">Seleção editorial</p><h2>Títulos desta curadoria</h2></div></header>
         <CuratedItemGrid items={list.items} />
       </div>

@@ -7,6 +7,8 @@ import {
   CalendarDays,
   Compass,
   ExternalLink,
+  FilePenLine,
+  Flag,
   Languages,
   Star,
   Tag,
@@ -37,7 +39,7 @@ export async function generateMetadata({ params }: CatalogItemPageProps): Promis
   return {
     title: `${item.title} | Dados da Guilda`,
     description: item.summary ?? item.description ?? `Conheça ${item.title} no catálogo Dados da Guilda.`,
-    alternates: { canonical: `/catalogo/${item.slug}` },
+    alternates: { canonical: `/catalog/${item.slug}` },
   };
 }
 
@@ -53,7 +55,7 @@ export default async function CatalogItemPage({ params }: CatalogItemPageProps) 
   return (
     <PublicShell active="catalog">
       <article className="detail-page">
-        <Breadcrumbs items={[{ label: "Início", href: "/" }, { label: "Catálogo", href: "/catalogo" }, { label: item.title }]} />
+        <Breadcrumbs items={[{ label: "Início", href: "/" }, { label: "Catálogo", href: "/catalog" }, { label: item.title }]} />
         <section className="detail-hero">
           <div
             className={`detail-cover ${cover ? "" : "catalog-cover--empty"}`}
@@ -73,8 +75,10 @@ export default async function CatalogItemPage({ params }: CatalogItemPageProps) 
               {item.experienceLevel && <span><BookOpen />{item.experienceLevel}</span>}
             </div>
             <div className="detail-actions">
-              <Link className="button-primary" href={`/catalogo/${item.slug}/avaliacoes`}>Ver avaliações <ArrowRight /></Link>
-              <Link className="button-secondary" href="/catalogo">Voltar ao catálogo</Link>
+              <Link className="button-primary" href={`/catalog/${item.slug}/reviews`}>Ver avaliações <ArrowRight /></Link>
+              <Link className="button-secondary" href={{ pathname: "/contributions/new", query: { itemId: item.id, title: item.title, slug: item.slug, type: item.type } }}><FilePenLine /> Sugerir correção</Link>
+              <Link className="button-secondary" href={{ pathname: "/reports/new", query: { slug: item.slug } }}><Flag /> Denunciar problema</Link>
+              <Link className="button-secondary" href="/catalog">Voltar ao catálogo</Link>
             </div>
           </div>
         </section>
@@ -91,7 +95,7 @@ export default async function CatalogItemPage({ params }: CatalogItemPageProps) 
 
             {!!item.editions?.length && <section className="paper-panel"><div className="panel-heading"><BookOpen /><div><p className="panel-eyebrow">Publicações</p><h2>Edições</h2></div></div><div className="edition-list">{item.editions.map((edition) => <div key={edition.id}><strong>{edition.name}</strong><span><Languages /> {edition.languageCode}{edition.releaseYear ? ` · ${edition.releaseYear}` : ""}{edition.publisher ? ` · ${edition.publisher.name}` : ""}</span></div>)}</div></section>}
 
-            {!!item.relations?.length && <section className="paper-panel"><div className="panel-heading"><Compass /><div><p className="panel-eyebrow">Continue explorando</p><h2>Títulos relacionados</h2></div></div><div className="relation-list">{item.relations.map((relation) => <Link href={`/catalogo/${relation.item.slug}`} key={`${relation.type}-${relation.item.slug}`}><span>{relation.type}</span><strong>{relation.item.title}</strong><ArrowRight /></Link>)}</div></section>}
+            {!!item.relations?.length && <section className="paper-panel"><div className="panel-heading"><Compass /><div><p className="panel-eyebrow">Continue explorando</p><h2>Títulos relacionados</h2></div></div><div className="relation-list">{item.relations.map((relation) => <Link href={`/catalog/${relation.item.slug}`} key={`${relation.type}-${relation.item.slug}`}><span>{relation.type}</span><strong>{relation.item.title}</strong><ArrowRight /></Link>)}</div></section>}
           </div>
 
           <aside className="detail-aside">

@@ -10,7 +10,7 @@ export default function NotFound() {
         <p className="panel-eyebrow">Caminho não encontrado</p>
         <h1>Este pergaminho se perdeu.</h1>
         <p>O conteúdo pode não existir, estar privado ou ainda não ter sido publicado pela API.</p>
-        <div className="detail-actions"><Link className="button-primary" href="/">Voltar ao início</Link><Link className="button-secondary" href="/catalogo">Explorar catálogo</Link></div>
+        <div className="detail-actions"><Link className="button-primary" href="/">Voltar ao início</Link><Link className="button-secondary" href="/catalog">Explorar catálogo</Link></div>
       </section>
     </PublicShell>
   );

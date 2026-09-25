@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Compass, ScrollText } from "lucide-react";
 import type { CuratedItem } from "./catalog-data";
@@ -23,7 +24,9 @@ export function PageMasthead({ eyebrow, title, description, children }: {
   );
 }
 
-export function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
+type BreadcrumbItem<T extends string> = { label: string; href?: Route<T> };
+
+export function Breadcrumbs<T extends string>({ items }: { items: BreadcrumbItem<T>[] }) {
   return (
     <nav className="breadcrumbs" aria-label="Navegação estrutural">
       {items.map((item, index) => (
@@ -48,7 +51,7 @@ export function CuratedItemGrid({ items }: { items: CuratedItem[] }) {
             {item.type === "ADVENTURE" ? <ScrollText /> : item.type === "CORE_BOOK" ? <BookOpen /> : <Compass />}
           </div>
           <div><span>{typeLabels[item.type]}</span><h2>{item.title}</h2></div>
-          <Link href={`/catalogo/${item.slug}`} aria-label={`Ver ${item.title}`}><ArrowRight /></Link>
+          <Link href={`/catalog/${item.slug}`} aria-label={`Ver ${item.title}`}><ArrowRight /></Link>
         </article>
       ))}
     </div>
