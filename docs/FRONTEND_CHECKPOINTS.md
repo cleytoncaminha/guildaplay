@@ -28,8 +28,14 @@
 | `/my-reviews` | Pronta | Avaliações próprias e estados de moderação |
 | `/contributions`, criação e detalhe | Prontas | Sugestões editoriais e acompanhamento da moderação |
 | `/reports/new` | Pronta | Denúncias de item ou mídia com regra de duplicidade |
+| `/admin` | Pronta | Shell protegido por role `ADMIN` e indicadores editoriais |
+| `/admin/catalog/systems` | Pronta | CRUD, publicação e arquivamento de sistemas |
+| `/admin/catalog/items` e editor | Prontas | CRUD, associações, aliases, fontes, relações e mídia |
+| `/admin/catalog/editions` | Pronta | Criação e edição de edições concretas |
+| Cadastros auxiliares `/admin/catalog/*` | Prontos | Editoras, criadores, categorias e tags |
 
-Ainda não existem as páginas de administração editorial e moderação.
+A administração editorial do CP5 está implementada. Ainda faltam as páginas de curadoria e
+moderação do CP6.
 
 ## 3. Mapa geral de páginas
 
@@ -196,7 +202,17 @@ Critério de pronto:
 - denúncia DUPLICATE exige item relacionado;
 - status sempre vem da API.
 
-### CP5 — Administração editorial
+### CP5 — Administração editorial — concluído
+
+Entrega inicial concluída:
+
+- shell administrativo responsivo e protegido por role `ADMIN`;
+- dashboard com indicadores reais da API;
+- gestão de sistemas com criação, edição, publicação e arquivamento;
+- proxy server-side com renovação de sessão e validação dos corpos enviados.
+- editor de itens com associações, aliases, fontes e relações;
+- upload direto para R2 por URL pré-assinada e confirmação na API;
+- edições, editoras, criadores, categorias e tags.
 
 Páginas:
 
@@ -249,4 +265,4 @@ CP1 Catálogo público
             -> CP7 Hardening
 ```
 
-O próximo checkpoint recomendado é o **CP5 — Administração editorial do catálogo**.
+O próximo checkpoint recomendado é o **CP6 — Curadoria e moderação**.
