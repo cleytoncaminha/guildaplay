@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { TornPaperFilters } from "@/components/torn-paper-filters";
+import { OfflineBanner } from "@/components/offline-banner";
 import "./globals.css";
 import "./public-pages.css";
 import "./auth.css";
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="pt-BR">
       <body className={`${display.variable} ${sans.variable}`}>
         <TornPaperFilters />
+        <OfflineBanner />
         {children}
       </body>
     </html>

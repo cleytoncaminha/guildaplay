@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { HttpClientError, requestJson } from "@/lib/http-client";
 import type {
   CatalogItem,
   CatalogResponse,
@@ -10,32 +11,20 @@ import type {
 
 const API_BASE_URL = (process.env.API_BASE_URL ?? "http://localhost:3000/api/v1").replace(/\/$/, "");
 
-export class CatalogApiError extends Error {
-  constructor(message: string, public readonly status: number) {
-    super(message);
+export class CatalogApiError extends HttpClientError {
+  constructor(message: string, status: number, code?: string, requestId?: string) {
+    super(message, status, code, requestId);
     this.name = "CatalogApiError";
   }
 }
 
 async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    cache: "no-store",
-    headers: { Accept: "application/json" },
-  });
-
-  if (!response.ok) {
-    let message = "Não foi possível carregar este conteúdo.";
-    try {
-      const body = (await response.json()) as { message?: string | string[] };
-      if (Array.isArray(body.message)) message = body.message.join(" ");
-      else if (body.message) message = body.message;
-    } catch {
-      // Mantém a mensagem padrão quando a API não retorna JSON.
-    }
-    throw new CatalogApiError(message, response.status);
+  try {
+    return await requestJson<T>(`${API_BASE_URL}${path}`, { cache: "no-store" });
+  } catch (error) {
+    if (error instanceof HttpClientError) throw new CatalogApiError(error.message, error.status, error.code, error.requestId);
+    throw error;
   }
-
-  return response.json() as Promise<T>;
 }
 
 export type CatalogListQuery = {

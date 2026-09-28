@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start --port 3001",
     "lint": "eslint .",
+    "test": "node --no-warnings --test --experimental-strip-types tests/unit.test.ts",
+    "qa:e2e": "node scripts/e2e-check.mjs",
     "qa:visual": "node scripts/visual-check.mjs"
   },
   "dependencies": {

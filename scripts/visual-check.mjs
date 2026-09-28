@@ -26,6 +26,11 @@ const routes = [
   { name: "admin-item-new", path: "/admin/catalog/items/new", mockAdmin: true },
   { name: "admin-publishers", path: "/admin/catalog/publishers", mockAdmin: true },
   { name: "admin-editions", path: "/admin/catalog/editions", mockAdmin: true },
+  { name: "admin-curated-lists", path: "/admin/curated-lists", mockAdmin: true },
+  { name: "admin-moderation-submissions", path: "/admin/moderation/submissions", mockAdmin: true },
+  { name: "admin-moderation-reports", path: "/admin/moderation/reports", mockAdmin: true },
+  { name: "admin-moderation-reviews", path: "/admin/moderation/reviews", mockAdmin: true },
+  { name: "admin-audit", path: "/admin/audit", mockAdmin: true },
   { name: "not-found", path: "/catalog/missing-item" },
 ];
 
@@ -77,6 +82,7 @@ for (const viewport of [{ name: "desktop", width: 1680, height: 1050 }, { name: 
         }] : resource === "publishers" ? [{ id: "00000000-0000-4000-8000-000000000004", name: "Editora da Guilda", slug: "editora-da-guilda", websiteUrl: null, countryCode: "BR", createdAt: "2026-09-25T12:00:00.000Z", updatedAt: "2026-09-25T12:00:00.000Z" }] : [];
         return requestRoute.fulfill({ contentType: "application/json", body: JSON.stringify({ data, meta: { page: 1, limit: Number(url.searchParams.get("limit") ?? 20), total: data.length, totalPages: data.length ? 1 : 0 } }) });
       });
+      await page.route("**/api/admin/audit-logs**", (requestRoute) => requestRoute.fulfill({ contentType: "application/json", body: JSON.stringify({ data: [], meta: { page: 1, limit: 30, total: 0, totalPages: 0 } }) }));
     }
     await page.goto(`${baseUrl}${route.path}`, { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(500);
@@ -86,6 +92,7 @@ for (const viewport of [{ name: "desktop", width: 1680, height: 1050 }, { name: 
       contentWidth: document.documentElement.scrollWidth,
       title: document.title,
     }));
+    if (dimensions.contentWidth > dimensions.viewportWidth + 1) errors.push(`Horizontal overflow: ${dimensions.contentWidth}px > ${dimensions.viewportWidth}px`);
     results.push({ route: route.path, viewport: viewport.name, ...dimensions, errors });
     await page.close();
   }

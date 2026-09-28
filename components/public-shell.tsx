@@ -59,8 +59,9 @@ export function PublicFooter() {
 export function PublicShell({ children, active }: { children: ReactNode; active?: "home" | "catalog" | "community" }) {
   return (
     <main id="top" className="public-page">
+      <a className="skip-link" href="#main-content">Pular para o conteúdo principal</a>
       <PublicHeader active={active} />
-      {children}
+      <div id="main-content" tabIndex={-1}>{children}</div>
       <PublicFooter />
     </main>
   );

@@ -109,3 +109,79 @@ export type RpgSystemInput = {
   publisherId?: string | null;
   releaseYear?: number | null;
 };
+
+export type FeaturedListStatus = CatalogStatus;
+
+export type FeaturedListItem = {
+  position: number;
+  item: Pick<CatalogItem, "id" | "title" | "slug" | "type">;
+};
+
+export type FeaturedList = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  status?: FeaturedListStatus;
+  items: FeaturedListItem[];
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SubmissionStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type SubmissionType = "CREATE_ITEM" | "UPDATE_ITEM";
+
+export type AdminSubmission = {
+  id: string;
+  submittedByUserId: string;
+  catalogItemId: string | null;
+  type: SubmissionType;
+  payload: Record<string, unknown>;
+  status: SubmissionStatus;
+  reviewReason: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReportStatus = "PENDING" | "RESOLVED" | "DISMISSED";
+export type ReportTargetType = "ITEM" | "MEDIA";
+export type ReportReason = "DUPLICATE" | "INACCURATE" | "COPYRIGHT" | "INAPPROPRIATE" | "OTHER";
+
+export type AdminReport = {
+  id: string;
+  reportedByUserId: string;
+  targetType: ReportTargetType;
+  catalogItemId: string | null;
+  mediaAssetId: string | null;
+  reason: ReportReason;
+  duplicateOfCatalogItemId: string | null;
+  description: string;
+  status: ReportStatus;
+  resolvedByUserId: string | null;
+  resolutionNote: string | null;
+  resolvedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReviewStatus = "PENDING" | "PUBLISHED" | "REJECTED";
+
+export type AdminReview = {
+  id: string;
+  rating: number;
+  content: string | null;
+  createdAt: string;
+  updatedAt: string;
+  author: { id: string; name: string };
+  catalogItem: { id: string; title: string; slug: string };
+};
+
+export type AuditLog = {
+  id: string;
+  eventType: string;
+  actorUserId: string | null;
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
+};

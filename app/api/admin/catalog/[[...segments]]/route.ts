@@ -10,12 +10,18 @@ import {
   createCreatorSchema,
   createPublisherSchema,
   createRpgSystemSchema,
+  addFeaturedListItemSchema,
+  createFeaturedListSchema,
   createTagSchema,
   mediaUploadSchema,
+  moderateCatalogReviewSchema,
+  resolveCatalogReportSchema,
+  reviewCatalogSubmissionSchema,
   updateCategorySchema,
   updateCatalogItemSchema,
   updateEditionSchema,
   updateCreatorSchema,
+  updateFeaturedListSchema,
   updatePublisherSchema,
   updateRpgSystemSchema,
   updateTagSchema,
@@ -25,7 +31,7 @@ import { applySessionCookies, authorizedApiRequest, clearSessionCookies, isTrust
 type Context = { params: Promise<{ segments?: string[] }> };
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const listResources = new Set(["publishers", "creators", "categories", "tags", "systems", "items", "editions"]);
+const listResources = new Set(["publishers", "creators", "categories", "tags", "systems", "items", "editions", "lists"]);
 const referenceSchemas = {
   publishers: { create: createPublisherSchema, update: updatePublisherSchema },
   creators: { create: createCreatorSchema, update: updateCreatorSchema },
@@ -83,6 +89,34 @@ function resolve(segments: string[], method: string, request: NextRequest): { pa
     return null;
   }
 
+  if (resource === "lists") {
+    if (segments.length === 1 && method === "POST") return { path: "/admin/catalog/lists", schema: createFeaturedListSchema };
+    if (segments.length === 2 && uuid.test(id) && method === "GET") return { path: `/admin/catalog/lists/${id}` };
+    if (segments.length === 2 && uuid.test(id) && method === "PATCH") return { path: `/admin/catalog/lists/${id}`, schema: updateFeaturedListSchema };
+    if (segments.length === 3 && uuid.test(id) && (action === "publish" || action === "archive") && method === "POST") return { path: `/admin/catalog/lists/${id}/${action}` };
+    if (segments.length === 4 && uuid.test(id) && action === "items" && uuid.test(segments[3]) && method === "POST") return { path: `/admin/catalog/lists/${id}/items/${segments[3]}`, schema: addFeaturedListItemSchema };
+    if (segments.length === 4 && uuid.test(id) && action === "items" && uuid.test(segments[3]) && method === "DELETE") return { path: `/admin/catalog/lists/${id}/items/${segments[3]}` };
+    return null;
+  }
+
+  if (resource === "submissions") {
+    if (segments.length === 2 && id === "pending" && method === "GET") return { path: "/admin/catalog/submissions/pending" };
+    if (segments.length === 3 && uuid.test(id) && (action === "approve" || action === "reject") && method === "POST") return { path: `/admin/catalog/submissions/${id}/${action}`, schema: reviewCatalogSubmissionSchema };
+    return null;
+  }
+
+  if (resource === "reports") {
+    if (segments.length === 2 && id === "pending" && method === "GET") return { path: "/admin/catalog/reports/pending" };
+    if (segments.length === 3 && uuid.test(id) && action === "resolve" && method === "POST") return { path: `/admin/catalog/reports/${id}/resolve`, schema: resolveCatalogReportSchema };
+    return null;
+  }
+
+  if (resource === "reviews") {
+    if (segments.length === 2 && id === "pending" && method === "GET") return { path: `/admin/catalog/reviews/pending${paginationQuery(request)}` };
+    if (segments.length === 3 && uuid.test(id) && action === "moderate" && method === "POST") return { path: `/admin/catalog/reviews/${id}/moderate`, schema: moderateCatalogReviewSchema };
+    return null;
+  }
+
   if (resource !== "systems") return null;
   if (segments.length === 1 && method === "POST") return { path: "/admin/catalog/systems", schema: createRpgSystemSchema };
   if (segments.length === 2 && uuid.test(id) && method === "GET") return { path: `/admin/catalog/systems/${id}` };
@@ -95,6 +129,7 @@ function resolve(segments: string[], method: string, request: NextRequest): { pa
 
 async function handle(request: NextRequest, context: Context) {
   const method = request.method.toUpperCase();
+  const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
   if (method !== "GET" && !isTrustedMutation(request)) {
     return NextResponse.json({ message: "Origem da requisição não permitida." }, { status: 403 });
   }
@@ -114,15 +149,19 @@ async function handle(request: NextRequest, context: Context) {
       body = JSON.stringify(parsed.data);
     }
 
+    const headers = new Headers({ "X-Request-Id": requestId });
+    if (body) headers.set("Content-Type", "application/json");
     const { response, rotated } = await authorizedApiRequest(request, target.path, {
       method,
-      ...(body ? { body, headers: { "Content-Type": "application/json" } } : {}),
+      ...(body ? { body } : {}),
+      headers,
     });
     const text = await response.text();
     const result = new NextResponse(text || null, {
       status: response.status,
       headers: {
         "Cache-Control": "no-store",
+        "X-Request-Id": response.headers.get("x-request-id") ?? requestId,
         ...(text ? { "Content-Type": response.headers.get("content-type") ?? "application/json" } : {}),
       },
     });
@@ -130,7 +169,7 @@ async function handle(request: NextRequest, context: Context) {
     if (response.status === 401) clearSessionCookies(result);
     return result;
   } catch {
-    return NextResponse.json({ message: "Não foi possível acessar a administração do catálogo." }, { status: 503 });
+    return NextResponse.json({ message: "Não foi possível acessar a administração do catálogo.", requestId }, { status: 503, headers: { "X-Request-Id": requestId } });
   }
 }
 

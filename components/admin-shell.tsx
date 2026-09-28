@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BookCopy, BookOpen, BookOpenText, Boxes, Building2, ChevronRight, CircleUserRound, FolderTree, LayoutDashboard, LoaderCircle, LogOut, ShieldAlert, Tags, UsersRound } from "lucide-react";
+import { Archive, BookCopy, BookOpen, BookOpenText, Boxes, Building2, ChevronRight, CircleUserRound, Flag, FolderTree, LayoutDashboard, List, LoaderCircle, LogOut, MessageSquareQuote, ScrollText, ShieldAlert, Tags, UsersRound } from "lucide-react";
 import { Brand } from "@/components/logo";
 import type { ApiEnvelope, AuthUser } from "@/lib/auth-types";
 
@@ -17,6 +17,11 @@ const navigation = [
   { href: "/admin/catalog/creators", label: "Criadores", icon: UsersRound },
   { href: "/admin/catalog/categories", label: "Categorias", icon: FolderTree },
   { href: "/admin/catalog/tags", label: "Tags", icon: Tags },
+  { href: "/admin/curated-lists", label: "Listas temáticas", icon: List },
+  { href: "/admin/moderation/submissions", label: "Contribuições", icon: Archive },
+  { href: "/admin/moderation/reports", label: "Denúncias", icon: Flag },
+  { href: "/admin/moderation/reviews", label: "Avaliações", icon: MessageSquareQuote },
+  { href: "/admin/audit", label: "Auditoria", icon: ScrollText },
 ] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {
@@ -80,10 +85,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <section className="admin-sidebar__roadmap" aria-label="Próximos módulos">
-          <strong><BookOpenText /> CP5 editorial</strong>
-          <span>Mídias e relações</span>
-          <span>Edições</span>
-          <span>Aliases, fontes e relações</span>
+          <strong><BookOpenText /> CP6 curadoria</strong>
+          <span>Listas temáticas</span>
+          <span>Filas de moderação</span>
+          <span>Auditoria de decisões</span>
         </section>
         <div className="admin-sidebar__user">
           <CircleUserRound />

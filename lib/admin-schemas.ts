@@ -72,3 +72,26 @@ export const createAliasSchema = z.object({ alias: z.string().trim().min(1).max(
 export const createSourceSchema = z.object({ label: z.string().trim().min(1).max(255), url: z.url().max(500) });
 export const createRelationSchema = z.object({ targetItemId: z.uuid(), type: z.enum(["REQUIRES", "SUPPLEMENT_OF", "ADVENTURE_FOR", "SETTING_FOR", "EDITION_OF", "EXPANSION_OF", "COMPATIBLE_WITH"]) });
 export const mediaUploadSchema = z.object({ purpose: z.enum(["CATALOG_COVER", "CATALOG_IMAGE"]), mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]), sizeBytes: z.number().int().min(1).max(10485760), catalogItemId: z.uuid() });
+
+export const reviewCatalogSubmissionSchema = z.object({ reason: optionalText(1000) });
+export const resolveCatalogReportSchema = z.object({
+  status: z.enum(["RESOLVED", "DISMISSED"]),
+  note: optionalText(1000),
+});
+export const moderateCatalogReviewSchema = z.object({
+  status: z.enum(["PUBLISHED", "REJECTED"]),
+  reason: optionalText(1000),
+});
+
+export const createFeaturedListSchema = z.object({
+  title: z.string().trim().min(1, "Informe o tÃ­tulo da lista.").max(160),
+  slug,
+  description: optionalText(5000),
+});
+export const updateFeaturedListSchema = createFeaturedListSchema.partial().refine(
+  (value) => Object.keys(value).length > 0,
+  "Informe ao menos um campo para alterar.",
+);
+export const addFeaturedListItemSchema = z.object({
+  position: z.number().int().min(0).max(1000000).optional(),
+});
